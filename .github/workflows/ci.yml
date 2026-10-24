@@ -1,0 +1,47 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ["17", "21"]
+        junit: ["5.8.2", "5.10.5", "5.11.4", "5.12.2", "5.13.4", "6.0.1"]
+        include:
+          - junit: "5.8.2"
+            extra: "-Dselective.noClassTemplate"
+          - junit: "5.10.5"
+            extra: "-Dselective.noClassTemplate"
+          - junit: "5.11.4"
+            extra: "-Dselective.noClassTemplate"
+          - junit: "5.12.2"
+            extra: "-Dselective.noClassTemplate"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - uses: actions/cache@v4
+        id: transport
+        with:
+          path: ~/transport-44a9c7abde5a35d869c5f71780d56e26c0c6f8bd
+          key: transport-44a9c7abde5a35d869c5f71780d56e26c0c6f8bd-${{ runner.os }}-${{ runner.arch }}
+      - if: steps.transport.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@stable
+      - if: steps.transport.outputs.cache-hit != 'true'
+        name: build transport
+        run: |
+          CARGO_TARGET_DIR="$RUNNER_TEMP/transport-target" cargo install --locked \
+            --git https://github.com/selectiveci/transport --rev 44a9c7abde5a35d869c5f71780d56e26c0c6f8bd \
+            --bin transport --bin transport-conformance --root ~/transport-44a9c7abde5a35d869c5f71780d56e26c0c6f8bd
+      - name: transport
+        run: echo "SELECTIVE_TRANSPORT=$HOME/transport-44a9c7abde5a35d869c5f71780d56e26c0c6f8bd/bin/transport" >> "$GITHUB_ENV"
+      - name: verify
+        run: mvn -B verify -Djunit.version=${{ matrix.junit }} ${{ matrix.extra }}
+      - name: conformance
+        run: scripts/conformance.sh "$HOME/transport-44a9c7abde5a35d869c5f71780d56e26c0c6f8bd/bin/transport-conformance" "$SELECTIVE_TRANSPORT" -Djunit.version=${{ matrix.junit }} ${{ matrix.extra }}

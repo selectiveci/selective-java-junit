@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>ci.selective.it</groupId>
+    <artifactId>reactor</artifactId>
+    <version>0.1.0</version>
+  </parent>
+  <artifactId>a</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>ci.selective</groupId>
+      <artifactId>selective-junit</artifactId>
+      <version>0.1.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

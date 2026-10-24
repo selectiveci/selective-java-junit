@@ -1,0 +1,7 @@
+{
+  "pass": "[engine:junit-jupiter]/[class:ci.selective.junit.conformance.ConformanceCases]/[method:passes()]",
+  "fail": "[engine:junit-jupiter]/[class:ci.selective.junit.conformance.ConformanceCases]/[method:fails()]",
+  "pending": "[engine:junit-jupiter]/[class:ci.selective.junit.conformance.ConformanceCases]/[method:pends()]",
+  "flaky": "[engine:junit-jupiter]/[class:ci.selective.junit.conformance.ConformanceCases]/[method:flakes()]",
+  "before_all_seconds": 1
+}
