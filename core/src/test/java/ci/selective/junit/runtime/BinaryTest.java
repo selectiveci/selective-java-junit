@@ -64,11 +64,11 @@ public class BinaryTest {
     }
 
     @Test
-    void thePinShipsTheStaticLinuxBuild() {
+    void thePinShipsEveryReleaseTarget() {
         Binary.Pin pin = Binary.Pin.load();
-        assertEquals("0.0.0-44a9c7a", pin.version());
-        assertEquals(Set.of("Linux-x86_64"), pin.sha256().keySet());
-        assertTrue(pin.sha256().get("Linux-x86_64").matches("[0-9a-f]{64}"), pin.sha256().toString());
+        assertEquals("0.2.0", pin.version());
+        assertEquals(Set.of("Darwin-aarch64", "Darwin-x86_64", "Linux-aarch64", "Linux-x86_64"), pin.sha256().keySet());
+        pin.sha256().values().forEach(hash -> assertTrue(hash.matches("[0-9a-f]{64}"), hash));
     }
 
     @Test
