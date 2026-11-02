@@ -23,8 +23,11 @@
     <junit.version>5.13.4</junit.version>
     <surefire.version>3.2.5</surefire.version>
     <gson.version>2.11.0</gson.version>
-    <transport.version>0.0.0-44a9c7a</transport.version>
-    <transport.sha256.Linux-x86_64>6b69e58eb0bdabde31232fd6b1c21fe660932f0adededbbbbf35dcbf13870996</transport.sha256.Linux-x86_64>
+    <transport.version>0.2.0</transport.version>
+    <transport.sha256.Darwin-aarch64>7dcaec969378a181a62749673b9c0b658be17bf16a8880f5effbd8e03a6c4a17</transport.sha256.Darwin-aarch64>
+    <transport.sha256.Darwin-x86_64>ccb9f795086d5584ff605cff8aefc534a82cde3154a3231f7f9396cde27bf7d4</transport.sha256.Darwin-x86_64>
+    <transport.sha256.Linux-aarch64>cf54fbf596b8a708fbc64e031f98737f076b8c32c371a4506c8141c49bca84be</transport.sha256.Linux-aarch64>
+    <transport.sha256.Linux-x86_64>87b2d6847ed0efa44c73ec16526b85134bf6f2e3759d99f925682eaf1b27d937</transport.sha256.Linux-x86_64>
   </properties>
   <dependencyManagement>
     <dependencies>

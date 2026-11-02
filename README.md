@@ -40,7 +40,7 @@ The provider dependency has to sit on the plugin, next to `<configuration>`. A d
 
 The first time it runs, the client downloads the transport release it was built against. It checks the archive's SHA-256 against the checksum built into the jar, then caches the binary as `~/.selective/transport/<version>/transport-<OS>-<arch>`. Linux binaries are static, so one binary serves glibc and musl systems such as Alpine. The download goes through the JVM's proxy settings (`https.proxyHost`, `https.proxyPort`). `SELECTIVE_TRANSPORT` names a binary and skips the download. `SELECTIVE_TRANSPORT_RELEASES` replaces `https://github.com/selectiveci/transport/releases/download` with a mirror that has the same layout. The pinned release is `transport.version` in the root pom, with one `transport.sha256.<OS>-<arch>` per target.
 
-The pin is `0.0.0-44a9c7a`: a static Linux x86_64 build of `selectiveci/transport` at `44a9c7abde5a35d869c5f71780d56e26c0c6f8bd`. No release carries it yet, so point `SELECTIVE_TRANSPORT_RELEASES` at a mirror that serves `v0.0.0-44a9c7a/transport-Linux-x86_64.tar.gz`, or build the transport at that commit and set `SELECTIVE_TRANSPORT`. The pin has no build for macOS or Linux aarch64; there the client exits 1 and asks for `SELECTIVE_TRANSPORT`. The URL and API key travel in `SELECTIVE_TRANSPORT_URL`, which the client sets for the child. They are not process arguments.
+The pin is release `v0.2.0` of `selectiveci/transport`, which ships Linux (static) and macOS builds for x86_64 and aarch64. There is no Windows build; there the client exits 1 as an unsupported platform. The URL and API key travel in `SELECTIVE_TRANSPORT_URL`, which the client sets for the child. They are not process arguments.
 
 `transport --build-env` supplies the run identity. These must be set and non-empty, or the client exits 1 and names the missing variables:
 
@@ -78,20 +78,20 @@ java -cp <classes-and-deps> ci.selective.junit.Main --dry-run --package com.exam
 
 ## Tests
 
-Build `transport` and `transport-conformance` at the pinned commit:
+Build `transport` and `transport-conformance` at the pinned tag:
 
 ```
-cargo install --locked --git https://github.com/selectiveci/transport --rev 44a9c7abde5a35d869c5f71780d56e26c0c6f8bd \
-  --bin transport --bin transport-conformance --root ~/transport-44a9c7a
+cargo install --locked --git https://github.com/selectiveci/transport --tag v0.2.0 \
+  --bin transport --bin transport-conformance --root ~/transport-v0.2.0
 ```
 
-Use a fresh `CARGO_TARGET_DIR` for each commit, since a reused one can install stale binaries. Then, with `SELECTIVE_TRANSPORT` pointing at `~/transport-44a9c7a/bin/transport`:
+Use a fresh `CARGO_TARGET_DIR` for each tag, since a reused one can install stale binaries. Then, with `SELECTIVE_TRANSPORT` pointing at `~/transport-v0.2.0/bin/transport`:
 
 ```
 mvn -B verify
 mvn -B verify -Djunit.version=5.12.2 -Dselective.noClassTemplate
 mvn -B verify -Djunit.version=5.11.4 -Dselective.noClassTemplate
-scripts/conformance.sh ~/transport-44a9c7a/bin/transport-conformance "$SELECTIVE_TRANSPORT"
+scripts/conformance.sh ~/transport-v0.2.0/bin/transport-conformance "$SELECTIVE_TRANSPORT"
 ```
 
 `scripts/conformance.sh` runs the transport's own conformance suite against the client twice: once as a plain runner, and once with the JaCoCo agent so the recording scenarios run.
