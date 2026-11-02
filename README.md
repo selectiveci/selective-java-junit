@@ -78,20 +78,20 @@ java -cp <classes-and-deps> ci.selective.junit.Main --dry-run --package com.exam
 
 ## Tests
 
-Build `transport` and `transport-conformance` at the pinned tag:
+Build `transport` and `transport-conformance` at the v0.2.0 commit:
 
 ```
-cargo install --locked --git https://github.com/selectiveci/transport --tag v0.2.0 \
-  --bin transport --bin transport-conformance --root ~/transport-v0.2.0
+cargo install --locked --git https://github.com/selectiveci/transport --rev 553bb45b8bfa3ac9c9f7ed1ad71a8ac19d384542 \
+  --bin transport --bin transport-conformance --root ~/transport-553bb45b8bfa3ac9c9f7ed1ad71a8ac19d384542
 ```
 
-Use a fresh `CARGO_TARGET_DIR` for each tag, since a reused one can install stale binaries. Then, with `SELECTIVE_TRANSPORT` pointing at `~/transport-v0.2.0/bin/transport`:
+Use a fresh `CARGO_TARGET_DIR` for each commit, since a reused one can install stale binaries. Then, with `SELECTIVE_TRANSPORT` pointing at `~/transport-553bb45b8bfa3ac9c9f7ed1ad71a8ac19d384542/bin/transport`:
 
 ```
 mvn -B verify
 mvn -B verify -Djunit.version=5.12.2 -Dselective.noClassTemplate
 mvn -B verify -Djunit.version=5.11.4 -Dselective.noClassTemplate
-scripts/conformance.sh ~/transport-v0.2.0/bin/transport-conformance "$SELECTIVE_TRANSPORT"
+scripts/conformance.sh ~/transport-553bb45b8bfa3ac9c9f7ed1ad71a8ac19d384542/bin/transport-conformance "$SELECTIVE_TRANSPORT"
 ```
 
 `scripts/conformance.sh` runs the transport's own conformance suite against the client twice: once as a plain runner, and once with the JaCoCo agent so the recording scenarios run.

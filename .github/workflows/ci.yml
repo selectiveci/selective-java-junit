@@ -2,6 +2,9 @@ name: ci
 on:
   push:
   pull_request:
+env:
+  TRANSPORT_RELEASE: v0.2.0
+  TRANSPORT_REV: 553bb45b8bfa3ac9c9f7ed1ad71a8ac19d384542
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -29,19 +32,19 @@ jobs:
       - uses: actions/cache@v4
         id: transport
         with:
-          path: ~/transport-v0.2.0
-          key: transport-v0.2.0-${{ runner.os }}-${{ runner.arch }}
+          path: ~/transport-${{ env.TRANSPORT_REV }}
+          key: transport-${{ env.TRANSPORT_REV }}-${{ runner.os }}-${{ runner.arch }}
       - if: steps.transport.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
       - if: steps.transport.outputs.cache-hit != 'true'
         name: build transport
         run: |
           CARGO_TARGET_DIR="$RUNNER_TEMP/transport-target" cargo install --locked \
-            --git https://github.com/selectiveci/transport --tag v0.2.0 \
-            --bin transport --bin transport-conformance --root ~/transport-v0.2.0
+            --git https://github.com/selectiveci/transport --rev "$TRANSPORT_REV" \
+            --bin transport --bin transport-conformance --root ~/transport-"$TRANSPORT_REV"
       - name: transport
-        run: echo "SELECTIVE_TRANSPORT=$HOME/transport-v0.2.0/bin/transport" >> "$GITHUB_ENV"
+        run: echo "SELECTIVE_TRANSPORT=$HOME/transport-$TRANSPORT_REV/bin/transport" >> "$GITHUB_ENV"
       - name: verify
         run: mvn -B verify -Djunit.version=${{ matrix.junit }} ${{ matrix.extra }}
       - name: conformance
-        run: scripts/conformance.sh "$HOME/transport-v0.2.0/bin/transport-conformance" "$SELECTIVE_TRANSPORT" -Djunit.version=${{ matrix.junit }} ${{ matrix.extra }}
+        run: scripts/conformance.sh "$HOME/transport-$TRANSPORT_REV/bin/transport-conformance" "$SELECTIVE_TRANSPORT" -Djunit.version=${{ matrix.junit }} ${{ matrix.extra }}
