@@ -66,7 +66,7 @@ public class BinaryTest {
     @Test
     void thePinShipsEveryReleaseTarget() {
         Binary.Pin pin = Binary.Pin.load();
-        assertEquals("0.2.0", pin.version());
+        assertEquals("0.3.0", pin.version());
         assertEquals(Set.of("Darwin-aarch64", "Darwin-x86_64", "Linux-aarch64", "Linux-x86_64"), pin.sha256().keySet());
         pin.sha256().values().forEach(hash -> assertTrue(hash.matches("[0-9a-f]{64}"), hash));
     }
